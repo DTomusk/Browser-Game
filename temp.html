@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas id="chingus" width="1200" height="800"></canvas>
+
+	<script type="text/javascript">
+		var canvas;
+		var ctx;
+
+	window.onload = function() {
+		canvas = document.getElementById('chingus');
+		ctx = canvas.getContext('2d');
+
+		var fps = 30
+
+		setInterval( function() {
+			moveStuff();
+			drawStuff();
+		}, 1000/fps);
+	}
+
+	function moveStuff() {}
+
+	function drawStuff() {}
+		
+	</script>
+</body>
+</html>
