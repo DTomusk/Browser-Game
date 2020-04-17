@@ -16,16 +16,49 @@
 
 		var fps = 30
 
+		// instantiate all things then start moving and drawing them 
+
+		let me = new Object(50, 50);
+
 		setInterval( function() {
 			moveStuff();
-			drawStuff();
+			drawStuff(me);
 		}, 1000/fps);
 	}
 
+	// not sure how move stuff will work yet, need to do collisions, keypresses and all sorts 
 	function moveStuff() {}
 
-	function drawStuff() {}
-		
+	// draw stuff should take a list of all the objects in the scene 
+	function drawStuff(object) {
+
+		drawBG();
+		drawObject(object);
+
+	}
+
+	function drawBG() {
+
+		ctx.fillStyle = "black";
+		ctx.fillRect(0,0,canvas.width, canvas.height);
+
+	}
+
+	function drawObject(object) {
+
+		ctx.fillStyle = "red";
+		ctx.fillRect(object.x, object.y, object.width, object.height);
+
+	}
+
+	function Object(width, height) {
+
+		this.width = width;
+		this.height = height;
+		this.x = 200;
+		this.y = 300;
+
+	}
 	</script>
 </body>
 </html>
