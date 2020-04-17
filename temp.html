@@ -24,6 +24,24 @@
 			moveStuff();
 			drawStuff(me);
 		}, 1000/fps);
+
+		window.addEventListener("keydown", function(evt) {
+			console.log("Key pressed");
+			switch(evt.keyCode) {
+				case 37:
+					me.x -= 2;
+					break;
+				case 38:
+					me.y -= 2;
+					break;
+				case 39:
+					me.x += 2;
+					break;
+				case 40:
+					me.y += 2;
+					break;
+			};
+		});
 	}
 
 	// not sure how move stuff will work yet, need to do collisions, keypresses and all sorts 
