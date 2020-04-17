@@ -18,40 +18,110 @@
 
 		// instantiate all things then start moving and drawing them 
 
-		let me = new Object(50, 50);
+		let me = new Object(50, 50, 200, 300);
+		let enemy = new Object(20, 20, 400, 100);
+		let friend = new Object(30, 30, 50, 500);
+
+		var objects = [me, enemy, friend];
+
+		objects.forEach(object => console.log(object));
+
+		for (object in objects) {
+			console.log(object);
+		}
 
 		setInterval( function() {
-			moveStuff();
-			drawStuff(me);
+			moveStuff(objects);
+			drawStuff(objects);
 		}, 1000/fps);
 
 		window.addEventListener("keydown", function(evt) {
-			console.log("Key pressed");
+			// holding a key down will increase speed, releasing it will set it to zero 
 			switch(evt.keyCode) {
 				case 37:
-					me.x -= 2;
+					if (me.vx > -me.vmax){
+						me.vx -= 1;
+					}
 					break;
 				case 38:
-					me.y -= 2;
+					if (me.vy > -me.vmax){
+						me.vy -= 1;
+					}
 					break;
 				case 39:
-					me.x += 2;
+					if (me.vx < me.vmax){
+						me.vx += 1;
+					}
 					break;
 				case 40:
-					me.y += 2;
+					if (me.vy < me.vmax){
+						me.vy += 1;
+					}
+					break;
+			};
+		});
+
+		// stop movement 
+		window.addEventListener("keyup", function(evt) {
+			switch(evt.keyCode) {
+				case 37:
+					me.vx = 0;
+					break;
+				case 38:
+					me.vy = 0;
+					break;
+				case 39:
+					me.vx = 0;
+					break;
+				case 40:
+					me.vy = 0;
 					break;
 			};
 		});
 	}
 
 	// not sure how move stuff will work yet, need to do collisions, keypresses and all sorts 
-	function moveStuff() {}
+	function moveStuff(objects) {
+
+		checkCollision(objects);
+		// position should change based on speed
+		// for each object in objects positions x, y += speeds 
+		objects.forEach(object => {
+			object.x += object.vx;
+			object.y += object.vy;
+		});
+	}
+
+	function checkCollision(objects) {
+
+		objects.forEach(object => {
+			if (object.x < 0) {
+				object.x = 0;
+				object.vx = 0;
+			};
+			if (object.x + object.width > canvas.width) {
+				object.x = canvas.width - object.width;
+				object.vx = 0;
+			};
+			if (object.y < 0) {
+				object.y = 0;
+				object.vy = 0;
+			};
+			if (object.y + object.height > canvas.height) {
+				object.y = canvas.height - object.height;
+				object.vy = 0;
+			};
+		});
+
+	}
 
 	// draw stuff should take a list of all the objects in the scene 
-	function drawStuff(object) {
+	function drawStuff(objects) {
 
 		drawBG();
-		drawObject(object);
+		objects.forEach(object => {
+			drawObject(object);
+		});
 
 	}
 
@@ -69,12 +139,15 @@
 
 	}
 
-	function Object(width, height) {
+	function Object(width, height, x, y) {
 
 		this.width = width;
 		this.height = height;
-		this.x = 200;
-		this.y = 300;
+		this.vx = 10*Math.random()-5;
+		this.vy = 10*Math.random()-5;
+		this.x = x;
+		this.y = y;
+		this.vmax = 15;
 
 	}
 	</script>
