@@ -10,6 +10,7 @@
 		var canvas;
 		var ctx; 
 		var fps = 24;
+		var g = 0.5
 
 		// load all objects into the scene and stuff
 		window.onload = function() {
@@ -17,34 +18,39 @@
 			ctx = canvas.getContext('2d');
 
 			var player = new Object(20, 20, 100, 100, "grey");
+			var tree = new Oak(70, 70);
 
 			var objects = [player];
 
 			setInterval(function() {
 				moveStuff(objects);
 				drawStuff(objects);
+				tree.draw();
 			}, 1000/fps);
 
-		}
+			window.addEventListener("keydown", function(evt) {
+				switch(evt.keyCode) {
+					case 37:
+						player.vx = -5;
+						break;
+					case 39:
+						player.vx = 5;
+						break;
+				}
+			});
 
-		window.addEventListener("keydown", function(evt) {
-			switch(evt.keyCode) {
-				case 37:
-					if (me.y + me.height == canvas.height) {
-						me.vx = 0;
-					} else {
-						me.vx = -5;
-					}
-					break;
-				case 39:
-					if (me.y + me.height == canvas.height) {
-						me.vx = 0; 
-					} else {
-						me.vx = 5;
-					}
-					break;
-			}
-		})
+			window.addEventListener("keyup", function(evt) {
+				switch(evt.keyCode) {
+					case 37:
+						player.vx = 0;
+						break;
+					case 39:
+						player.vx = 0;
+						break;
+				}
+			})
+
+		}
 
 		function moveStuff(objects) {
 
@@ -52,17 +58,20 @@
 				checkCollision(object);
 				object.x += object.vx;
 				object.y += object.vy;
+				if (object.y + object.height < canvas.height) {
+					object.vy += g;
+				} 
 			})
 		}
 
 		function checkCollision(object) {
 			if (object.x < 0) {
 				object.x = 0;
-				object.vx = -object.vx/2;
+				object.vx = 0;
 			};
 			if (object.x + object.width > canvas.width) {
 				object.x = canvas.width - object.width;
-				object.vx = -object.vx/2;
+				object.vx = 0;
 			};
 			if (object.y < 0) {
 				object.y = 0;
@@ -102,6 +111,7 @@
 			this.state = "idle";
 		}
 	</script>
+	<script type="text/javascript" src="level.js"></script>
 
 </body>
 </html>
