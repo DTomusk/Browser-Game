@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas id="canvas" width="1200" height="800"></canvas>
+
+	<script type="text/javascript">
+		var canvas;
+		var ctx; 
+		var fps = 24;
+
+		// load all objects into the scene and stuff
+		window.onload = function() {
+			canvas = document.getElementById('canvas');
+			ctx = canvas.getContext('2d');
+
+			var player = new Object(20, 20, 100, 100, "grey");
+
+			var objects = [player];
+
+			setInterval(function() {
+				moveStuff(objects);
+				drawStuff(objects);
+			}, 1000/fps);
+
+		}
+
+		window.addEventListener("keydown", function(evt) {
+			switch(evt.keyCode) {
+				case 37:
+					if (me.y + me.height == canvas.height) {
+						me.vx = 0;
+					} else {
+						me.vx = -5;
+					}
+					break;
+				case 39:
+					if (me.y + me.height == canvas.height) {
+						me.vx = 0; 
+					} else {
+						me.vx = 5;
+					}
+					break;
+			}
+		})
+
+		function moveStuff(objects) {
+
+			objects.forEach(object => {
+				checkCollision(object);
+				object.x += object.vx;
+				object.y += object.vy;
+			})
+		}
+
+		function checkCollision(object) {
+			if (object.x < 0) {
+				object.x = 0;
+				object.vx = -object.vx/2;
+			};
+			if (object.x + object.width > canvas.width) {
+				object.x = canvas.width - object.width;
+				object.vx = -object.vx/2;
+			};
+			if (object.y < 0) {
+				object.y = 0;
+				object.vy = 0;
+			};
+			if (object.y + object.height > canvas.height) {
+				object.y = canvas.height - object.height;
+				object.vy = 0;
+			};
+		}
+
+		function drawStuff(objects) {
+			drawBG();
+			objects.forEach(object => {
+				drawObject(object);
+			})
+		}
+
+		function drawBG() {
+			ctx.fillStyle = "black";
+			ctx.fillRect(0,0,canvas.width,canvas.height);
+		}
+
+		function drawObject(object) {
+			ctx.fillStyle = object.color;
+			ctx.fillRect(object.x, object.y, object.width, object.height);
+		}
+
+		function Object(width, height, x, y, color) {
+			this.width = width;
+			this.height = height;
+			this.x = x;
+			this.y = y;
+			this.vx = 0;
+			this.vy = 0;
+			this.color = color; 
+			this.state = "idle";
+		}
+	</script>
+
+</body>
+</html>
