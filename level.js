@@ -37,6 +37,8 @@ class Actor extends Object {
 		super(x, y, width, height, colour, collidable);
 		this.vx = 0;
 		this.vy = 0;
+		this.walkingOn = null;
+		this.state = "air";
 	}
 
 	draw() {
