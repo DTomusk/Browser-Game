@@ -15,6 +15,7 @@ class Level {
 
 // every object in the world is an instance of object 
 // there will be subclasses for dynamic and static objects 
+// objects should be lists of components not single rectangles (like oak is at the moment )
 class Object {
 	constructor(x, y, width, height, colour, collidable) {
 		this.x = x;
@@ -66,7 +67,7 @@ class Oak {
 	}
 }
 
-// singl rectangles
+// single rectangles
 class Component {
 	constructor(x, y, width, height, colour) {
 		this.x = x;

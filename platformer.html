@@ -10,6 +10,7 @@
 		var canvas;
 		var ctx; 
 		var fps = 24;
+		// when in the air vy of any object increases by 0.5 every frame
 		var g = 0.5
 
 		// load all objects into the scene and stuff
@@ -17,6 +18,7 @@
 			canvas = document.getElementById('canvas');
 			ctx = canvas.getContext('2d');
 
+			// initial objects, should be in its own place
 			var tree = new Oak(70, 70);
 			var player = new Actor(100, 100, 20, 20, "grey");
 
@@ -55,8 +57,10 @@
 
 			level.actors.forEach(actor => {
 				checkCollision(actor, level);
+				// update position
 				actor.x += actor.vx;
 				actor.y += actor.vy;
+				// needs to be changed so relative to midground objects, not canvas boundary
 				if (actor.y + actor.height < canvas.height) {
 					actor.vy += g;
 				} 
@@ -64,6 +68,8 @@
 		}
 
 		function checkCollision(actor, level) {
+			// currently assumes collision from above 
+			// only works out collision between actors and midground objects
 			level.midground.forEach(object => {
 				if (object.x < actor.x + actor.width &&
    						object.x + object.width > actor.x &&
@@ -75,6 +81,7 @@
 					};
 			})
 
+			// canvas boundary collision
 			if (actor.x < 0) {
 				actor.x = 0;
 				actor.vx = 0;
