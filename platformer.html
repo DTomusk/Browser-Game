@@ -17,15 +17,15 @@
 			canvas = document.getElementById('canvas');
 			ctx = canvas.getContext('2d');
 
-			var player = new Object(20, 20, 100, 100, "grey");
 			var tree = new Oak(70, 70);
+			var player = new Actor(100, 100, 20, 20, "grey");
 
-			var objects = [player];
-
+			var level = new Level(400, 600, [], 
+				[new Object(0, 500, 400, 100, "blue", true)],[tree],[player])
+			
 			setInterval(function() {
-				moveStuff(objects);
-				drawStuff(objects);
-				tree.draw();
+				moveStuff(level);
+				drawStuff(level);
 			}, 1000/fps);
 
 			window.addEventListener("keydown", function(evt) {
@@ -49,66 +49,61 @@
 						break;
 				}
 			})
-
 		}
 
-		function moveStuff(objects) {
+		function moveStuff(level) {
 
-			objects.forEach(object => {
-				checkCollision(object);
-				object.x += object.vx;
-				object.y += object.vy;
-				if (object.y + object.height < canvas.height) {
-					object.vy += g;
+			level.actors.forEach(actor => {
+				checkCollision(actor, level);
+				actor.x += actor.vx;
+				actor.y += actor.vy;
+				if (actor.y + actor.height < canvas.height) {
+					actor.vy += g;
 				} 
 			})
 		}
 
-		function checkCollision(object) {
-			if (object.x < 0) {
-				object.x = 0;
-				object.vx = 0;
+		function checkCollision(actor, level) {
+			level.midground.forEach(object => {
+				if (object.x < actor.x + actor.width &&
+   						object.x + object.width > actor.x &&
+   						object.y < actor.y + actor.height &&
+   						object.y + object.height > actor.y) {
+						//actor.vx = 0;
+						actor.vy = 0;
+						actor.y = object.y - actor.height;
+					};
+			})
+
+			if (actor.x < 0) {
+				actor.x = 0;
+				actor.vx = 0;
 			};
-			if (object.x + object.width > canvas.width) {
-				object.x = canvas.width - object.width;
-				object.vx = 0;
+			if (actor.x + actor.width > canvas.width) {
+				actor.x = canvas.width - actor.width;
+				actor.vx = 0;
 			};
-			if (object.y < 0) {
-				object.y = 0;
-				object.vy = 0;
+			if (actor.y < 0) {
+				actor.y = 0;
+				actor.vy = 0;
 			};
-			if (object.y + object.height > canvas.height) {
-				object.y = canvas.height - object.height;
-				object.vy = 0;
+			if (actor.y + actor.height > canvas.height) {
+				actor.y = canvas.height - actor.height;
+				actor.vy = 0;
 			};
 		}
 
-		function drawStuff(objects) {
+		function drawStuff(level) {
 			drawBG();
-			objects.forEach(object => {
-				drawObject(object);
-			})
+			level.background.forEach(element => element.draw())
+			level.actors.forEach(actor => actor.draw())
+			level.midground.forEach(element => element.draw())
+			level.foreground.forEach(element => element.draw())
 		}
 
 		function drawBG() {
 			ctx.fillStyle = "black";
 			ctx.fillRect(0,0,canvas.width,canvas.height);
-		}
-
-		function drawObject(object) {
-			ctx.fillStyle = object.color;
-			ctx.fillRect(object.x, object.y, object.width, object.height);
-		}
-
-		function Object(width, height, x, y, color) {
-			this.width = width;
-			this.height = height;
-			this.x = x;
-			this.y = y;
-			this.vx = 0;
-			this.vy = 0;
-			this.color = color; 
-			this.state = "idle";
 		}
 	</script>
 	<script type="text/javascript" src="level.js"></script>

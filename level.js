@@ -1,14 +1,53 @@
 // a level is just a bunch of objects 
 class Level {
-	constructor(width, height, objects) {
+	constructor(width, height, foreground, midground, background, actors) {
 		this.width = width;
 		this.height = height;
-		this.objects = objects;
+		// non collidable objects in front of the player
+		this.foreground = foreground;
+		// collidable objects
+		this.midground = midground;
+		// non collidable objects behind the player
+		this.background = background;
+		this.actors = actors;
 	}
 }
 
 // every object in the world is an instance of object 
 // there will be subclasses for dynamic and static objects 
+class Object {
+	constructor(x, y, width, height, colour, collidable) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.colour = colour;
+		this.collidable = collidable;
+	}
+
+	draw() {
+		ctx.fillStyle = this.colour;
+		ctx.fillRect(this.x, this.y, this.width, this.height);
+	}
+}
+
+class Actor extends Object {
+	constructor(x, y, width, height, colour, collidable) {
+		super(x, y, width, height, colour, collidable);
+		this.vx = 0;
+		this.vy = 0;
+	}
+
+	draw() {
+		ctx.fillStyle = this.colour;
+		ctx.fillRect(this.x, this.y, this.width, this.height);
+	}
+}
+
+//class Scenery extends Object {
+
+//}
+
 class Oak {
 	constructor(x, y) {
 		this.x = x;
