@@ -11,7 +11,7 @@
 		var ctx; 
 		var fps = 24;
 		// when in the air vy of any object increases by 0.5 every frame
-		var g = 0.5
+		var g = 1;
 
 		// load all objects into the scene and stuff
 		window.onload = function() {
@@ -19,11 +19,11 @@
 			ctx = canvas.getContext('2d');
 
 			// initial objects, should be in its own place
-			var tree = new Oak(70, 70);
+			var tree = new Oak(70, 130);
 			var player = new Actor(100, 100, 20, 20, "grey");
 
 			var level = new Level(400, 600, [], 
-				[new Object(0, 500, 400, 100, "blue", true)],[tree],[player])
+				[new Object(0, 500, 400, 100, "blue", true), new Object(700, 400, 100, 100, "DarkGoldenRod", true)],[tree],[player])
 			
 			// the actual game 
 			setInterval(function() {
@@ -44,12 +44,21 @@
 
 			window.addEventListener("keyup", function(evt) {
 				switch(evt.keyCode) {
-					case 37:
-						player.vx = 0;
-						break;
 					case 39:
-						player.vx = 0;
+						if (player.vx > 0) {
+							player.vx = 0;
+						}
 						break;
+					case 37:
+						if (player.vx < 0) {
+							player.vx = 0;
+						}
+						break;
+					case 32: 
+						if (player.state == "ground") {
+							player.vy -= 10;
+							player.state = "air";
+						}
 				}
 			})
 		}
@@ -65,7 +74,7 @@
 				actor.x += actor.vx;
 				actor.y += actor.vy;
 				// needs to be changed so relative to midground objects, not canvas boundary
-
+				console.log(actor.state);
 			})
 		}
 
@@ -75,16 +84,8 @@
 
 				// checks collision in all four directions
 				// this can be simplified down to two statements 
-				if (actor.vx > 0 &&
-						actor.x + actor.width > object.x &&
-						actor.x < object.x + object.width &&
-						actor.y + actor.height > object.y && 
-						actor.y < object.y + object.height) {
-					actor.vx = 0;
-					actor.x = object.x - actor.width;
-				}
 				if (actor.vy > 0 &&
-						actor.y + actor.height > object.y &&
+						actor.y + actor.height + actor.vy > object.y &&
 						actor.y < object.y + object.height &&
 						actor.x + actor.width > object.x && 
 						actor.x < object.x + object.width) {
@@ -93,16 +94,24 @@
 					actor.walkingOn = object;
 					actor.state = "ground";
 				}
-				if (actor.vx < 0 &&
-						actor.x + actor.width > object.x &&
-						actor.x < object.x + object.width &&
+				if (actor.vx > 0 &&
+						actor.x + actor.width + actor.vx >= object.x &&
+						actor.x <= object.x + object.width &&
 						actor.y + actor.height > object.y && 
 						actor.y < object.y + object.height) {
 					actor.vx = 0;
-					actor.x = object.x + object.width;
+					actor.x = object.x - actor.width - 2;
+				}
+				if (actor.vx < 0 &&
+						actor.x + actor.width + actor.vx >= object.x &&
+						actor.x <= object.x + object.width &&
+						actor.y + actor.height > object.y && 
+						actor.y < object.y + object.height) {
+					actor.vx = 0;
+					actor.x = object.x + object.width + 2;
 				}
 				if (actor.vy < 0 &&
-						actor.y + actor.height > object.y &&
+						actor.y + actor.height + actor.vy > object.y &&
 						actor.y < object.y + object.height &&
 						actor.x + actor.width > object.x && 
 						actor.x < object.x + object.width) {
@@ -112,22 +121,27 @@
 			})
 
 			// canvas boundary collision
-			if (actor.x < 0) {
+			// probably won't be necessary in the end 
+			if (actor.x + actor.vx < 0) {
 				actor.x = 0;
 				actor.vx = 0;
 			};
-			if (actor.x + actor.width > canvas.width) {
-				actor.x = canvas.width - actor.width;
+			if (actor.x + actor.width + actor.vx > level.width) {
+				actor.x = level.width - actor.width;
 				actor.vx = 0;
 			};
-			if (actor.y < 0) {
+			if (actor.y + actor.vy < 0) {
 				actor.y = 0;
 				actor.vy = 0;
 			};
-			if (actor.y + actor.height > canvas.height) {
-				actor.y = canvas.height - actor.height;
+			if (actor.y + actor.height + actor.vy > level.height) {
+				actor.y = level.height - actor.height;
 				actor.vy = 0;
+				actor.walkingOn = "Sunshine";
+				actor.state = "ground";
 			};
+
+			// some fudging for falling off things 
 			if (actor.walkingOn != null) {
 				if (actor.x + actor.width < actor.walkingOn.x || actor.x > actor.walkingOn.x + actor.walkingOn.width) {
 					actor.state = "air";
@@ -136,16 +150,16 @@
 		}
 
 		function drawStuff(level) {
-			drawBG();
+			drawBG(level);
 			level.background.forEach(element => element.draw())
 			level.actors.forEach(actor => actor.draw())
 			level.midground.forEach(element => element.draw())
 			level.foreground.forEach(element => element.draw())
 		}
 
-		function drawBG() {
+		function drawBG(level) {
 			ctx.fillStyle = "black";
-			ctx.fillRect(0,0,canvas.width,canvas.height);
+			ctx.fillRect(0,0,level.width,level.height);
 		}
 	</script>
 	<script type="text/javascript" src="level.js"></script>
