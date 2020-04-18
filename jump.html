@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<canvas id="chingus" width="1200" height="800"></canvas>
+
+	<script type="text/javascript">
+		var canvas;
+		var ctx;
+
+	window.onload = function() {
+		canvas = document.getElementById('chingus');
+		ctx = canvas.getContext('2d');
+		// gravity
+		g = 0.5;
+
+		var fps = 24
+
+		let me = new Object(50, 50, 200, 300);
+
+		var objects = [me];
+
+		objects.forEach(object => console.log(object));
+
+		for (object in objects) {
+			console.log(object);
+		}
+
+		setInterval( function() {
+			moveStuff(objects);
+			drawStuff(objects);
+		}, 1000/fps);
+
+		window.addEventListener("keydown", function(evt) {
+			switch(evt.keyCode) { 
+				case 37:
+					if (me.vx > -me.vmax){
+						me.vx -= 1;
+					}
+					break;
+				case 39:
+					if (me.vx < me.vmax){
+						me.vx += 1;
+					}
+					break;
+			};
+		});
+
+		window.addEventListener("keyup", function(evt) {
+			switch(evt.keyCode) {
+				case 32: 
+					console.log("Jump");
+					// can only jump off the ground 
+					if (me.y + me.height == canvas.height) {
+						me.vy -= 20;
+					}
+					break;
+				case 37:
+					me.vx = 0
+					break;
+				case 39:
+					me.vx = 0 
+					break;
+			}
+		})
+	}
+
+	function moveStuff(objects) {
+
+		checkCollision(objects);
+		objects.forEach(object => {
+			object.x += object.vx;
+			object.y += object.vy;
+			// gravity only applies while in the air 
+			if (object.y + object.height < canvas.height) {
+				object.vy += g;
+			}
+		});
+	}
+
+	function checkCollision(objects) {
+
+		objects.forEach(object => {
+			if (object.x < 0) {
+				object.x = 0;
+				object.vx = -object.vx/2;
+			};
+			if (object.x + object.width > canvas.width) {
+				object.x = canvas.width - object.width;
+				object.vx = -object.vx/2;
+			};
+			if (object.y < 0) {
+				object.y = 0;
+				object.vy = 0;
+			};
+			if (object.y + object.height > canvas.height) {
+				object.y = canvas.height - object.height;
+				object.vy = 0;
+			};
+		});
+
+	}
+
+	function drawStuff(objects) {
+
+		drawBG();
+		objects.forEach(object => {
+			drawObject(object);
+		});
+
+	}
+
+	function drawBG() {
+
+		ctx.fillStyle = "black";
+		ctx.fillRect(0,0,canvas.width, canvas.height);
+
+	}
+
+	function drawObject(object) {
+
+		ctx.fillStyle = "red";
+		ctx.fillRect(object.x, object.y, object.width, object.height);
+
+	}
+
+	function Object(width, height, x, y) {
+
+		this.width = width;
+		this.height = height;
+		this.vx = 0;
+		this.vy = 0;
+		this.x = x;
+		this.y = y;
+		this.vmax = 20;
+
+	}
+	</script>
+</body>
+</html>
