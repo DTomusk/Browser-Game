@@ -11,6 +11,7 @@ class Level {
 		// non collidable objects behind the player
 		this.background = background;
 		this.actors = actors;
+		this.speech = null;
 	}
 }
 

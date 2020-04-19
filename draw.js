@@ -7,11 +7,28 @@ function drawStuff(level, xShift, yShift) {
 	level.actors.forEach(actor => actor.draw(xShift, yShift));
 	level.midground.forEach(element => element.draw(xShift, yShift));
 	level.foreground.forEach(element => element.draw(xShift, yShift));
+	if (level.speech != null) {
+		drawSpeech(level, level.speech, xShift, yShift);
+	}
+	// if there is text to display display it here in some sort of text box 
+	// we may want to have various texts on screen at once, which complicates matters 
+	// there will only ever be one speech bubble on screen at a time (I imagine), 
+	// so having a single variable for speech may be fine
 }
 
 function drawBG(level) {
 	ctx.fillStyle = "black";
 	ctx.fillRect(0,0,level.width,level.height);
+}
+
+function drawSpeech(level, speech, xShift, yShift) {
+	ctx.fillStyle = "white";
+	ctx.fillRect(5, 5, level.width, 60);
+	ctx.fillStyle = "black";
+	ctx.fillRect(8, 8, level.width-6, 54);
+	ctx.font = "50px Arial";
+	ctx.fillStyle = "White";
+	ctx.fillText(speech, 10, 50);
 }
 
 function clearScreen() {

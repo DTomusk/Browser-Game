@@ -99,9 +99,8 @@
 						level.actors.forEach(person => {
 							if (playerNear(player, person)) {
 								if (person instanceof Talker) {
-									ctx.font = "50px Arial";
-									ctx.fillStyle = "White";
-									ctx.fillText(person.speech, 10, 50);
+									// player.state = talking or something like that
+									level.speech = person.speech;
 								}
 							}
 						})
