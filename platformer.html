@@ -20,10 +20,14 @@
 
 			// initial objects, should be in its own place
 			var tree = new Oak(70, 130);
-			var player = new Actor(100, 100, 20, 20, "grey");
+			var player = new Actor(100, 100, 20, 20, [new Component(0,0,20,20,"grey")]);
+
+			var level2 = new Level(500, 500, [],[],[],[]);
 
 			var level = new Level(400, 600, [], 
-				[new Object(0, 500, 400, 100, "blue", true), new Object(700, 400, 100, 100, "DarkGoldenRod", true)],[tree],[player])
+				[new Object(0, 500, 400, 100, [new Component(0,0,400,100,"blue")]), new Object(300, 480, 40, 40, [new Component(0,0,40,40,"DarkGoldenRod")])],[tree],[player],[new Door(200, 400, 100, 100, level2)]);
+
+			var levels = [level];
 			
 			// the actual game 
 			setInterval(function() {
@@ -59,8 +63,30 @@
 							player.vy -= 10;
 							player.state = "air";
 						}
+						break;
+					// e for interaction
+					case 69:
+						level.interactables.forEach(item => {
+							if (playerNear(player, item)) {
+								if (item instanceof Door) {
+									// loadLevel(item.destination)
+									level = item.destination;
+								}
+							}
+						})
 				}
 			})
+		}
+
+		function playerNear(player, item) {
+			if (player.x + player.width/2 > item.x - 10 &&
+				player.x + player.width/2 < item.x + item.width + 10 &&
+				player.y + player.height/2 > item.y - 10 &&
+				player.y + player.height/2 < item.y + item.height + 10) {
+				return true;
+			} else {
+				return false
+			}
 		}
 
 		function moveStuff(level) {
@@ -81,7 +107,6 @@
 		function checkCollision(actor, level) {
 			// only works out collision between actors and midground objects
 			level.midground.forEach(object => {
-
 				// checks collision in all four directions
 				// this can be simplified down to two statements 
 				if (actor.vy > 0 &&
@@ -151,10 +176,11 @@
 
 		function drawStuff(level) {
 			drawBG(level);
-			level.background.forEach(element => element.draw())
-			level.actors.forEach(actor => actor.draw())
-			level.midground.forEach(element => element.draw())
-			level.foreground.forEach(element => element.draw())
+			level.background.forEach(element => element.draw());
+			level.actors.forEach(actor => actor.draw());
+			level.midground.forEach(element => element.draw());
+			level.interactables.forEach(element => element.draw());
+			level.foreground.forEach(element => element.draw());
 		}
 
 		function drawBG(level) {
