@@ -1,6 +1,6 @@
 // a level is just a bunch of objects 
 class Level {
-	constructor(width, height, foreground, midground, background, actors, interactables) {
+	constructor(width, height, foreground, midground, background, actors, interactables, spawn) {
 		this.width = width;
 		this.height = height;
 		// non collidable objects in front of the player
@@ -29,10 +29,10 @@ class Object {
 		this.parts = parts;
 	}
 
-	draw() {
+	draw(xSfhit, yShift) {
 		this.parts.forEach(comp => {
 			ctx.fillStyle = comp.colour;
-			ctx.fillRect(comp.x+this.x, comp.y+this.y, comp.width, comp.height);
+			ctx.fillRect(comp.x+this.x-xSfhit, comp.y+this.y-yShift, comp.width, comp.height);
 		})
 	}
 }
@@ -46,12 +46,14 @@ class Actor extends Object {
 		this.state = "air";
 	}
 
+	/*
 	draw() {
 		this.parts.forEach(comp => {
 			ctx.fillStyle = comp.colour;
 			ctx.fillRect(comp.x+this.x, comp.y+this.y, comp.width, comp.height);
 		})
 	}
+	*/
 }
 
 class Door extends Object {
@@ -71,12 +73,14 @@ class Oak extends Object {
 		];
 	}
 
+	/*
 	draw() {
 		this.parts.forEach(part => {
 			ctx.fillStyle = part.colour;
 			ctx.fillRect(part.x+this.x, part.y+this.y, part.width, part.height);
 		});
 	}
+	*/
 }
 
 // single rectangles
