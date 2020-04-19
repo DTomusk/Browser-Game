@@ -45,15 +45,13 @@ class Actor extends Object {
 		this.walkingOn = null;
 		this.state = "air";
 	}
+}
 
-	/*
-	draw() {
-		this.parts.forEach(comp => {
-			ctx.fillStyle = comp.colour;
-			ctx.fillRect(comp.x+this.x, comp.y+this.y, comp.width, comp.height);
-		})
+class Talker extends Actor {
+	constructor(x, y, width, height, parts) {
+		super(x, y, width, height, parts);
+		this.speech = "Hello stranger, where's the danger?";
 	}
-	*/
 }
 
 class Door extends Object {
@@ -72,15 +70,6 @@ class Oak extends Object {
 			new Component(70, 70, 40, 300, "brown")
 		];
 	}
-
-	/*
-	draw() {
-		this.parts.forEach(part => {
-			ctx.fillStyle = part.colour;
-			ctx.fillRect(part.x+this.x, part.y+this.y, part.width, part.height);
-		});
-	}
-	*/
 }
 
 // single rectangles

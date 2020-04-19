@@ -1,5 +1,5 @@
 // file for working out the logic of the game
-function moveStuff(level) {
+function moveStuff(level, xShift, yShift) {
 
 	level.actors.forEach(actor => {
 		checkCollision(actor, level);
@@ -10,7 +10,6 @@ function moveStuff(level) {
 		actor.x += actor.vx;
 		actor.y += actor.vy;
 		// needs to be changed so relative to midground objects, not canvas boundary
-		console.log(actor.state);
 	})
 }
 

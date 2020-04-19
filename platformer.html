@@ -30,17 +30,28 @@
 			var tree = new Oak(70, 130);
 			var player = new Actor(100, 100, 20, 20, [new Component(0,0,20,20,"grey")]);
 
+			var friend = new Talker(150, 100, 20, 20, [new Component(0,0,20,20,"orange")]);
+
+			var enemy = new Actor(400, 100, 20, 30, [new Component(0,0,20,30,"red")]);
+
 			var level2 = new Level(500, 500, [],[],[],[],[]);
 
 			var level = new Level(1200, 600, [], 
-				[new Object(0, 500, 400, 100, [new Component(0,0,400,100,"blue")]), new Object(300, 480, 40, 40, [new Component(0,0,40,40,"DarkGoldenRod")])],[tree],[player],[new Door(200, 400, 100, 100, level2)]);
+				[new Object(0, 500, 1000, 100, [new Component(0,0,1000,100,"blue")]), new Object(300, 480, 40, 40, [new Component(0,0,40,40,"DarkGoldenRod")])],[tree],[player, enemy, friend],[new Door(200, 400, 100, 100, level2)]);
 
 			var levels = [level];
 			
 			// the actual game 
 			setInterval(function() {
-				moveStuff(level);
-				drawStuff(level,xShift,yShift);
+				moveStuff(level, xShift, yShift);
+				// ideally the camera logic would be in a different place but I don't want to deal with refactoring it as of yet 
+				if ((player.x - xShift > 2*canvas.width/3 && player.vx > 0 && xShift < level.width - canvas.width) || (player.x - xShift < canvas.width/3 && player.vx < 0 && xShift > 0)) {
+					xShift += player.vx;
+				};
+				if ((player.y - yShift > 2*canvas.height/3 && player.vy > 0 && yShift < level.height - canvas.height) || (player.y - yShift < canvas.height/3 && player.vy < 0 && yShift > 0)) {
+					yShift += player.yx;
+				};
+				drawStuff(level, xShift, yShift);
 			}, 1000/fps);
 
 
@@ -49,15 +60,9 @@
 				switch(evt.keyCode) {
 					case 37:
 						player.vx = -5;
-						if (xShift < 0) {
-							xShift += player.vx;
-						}
 						break;
 					case 39:
 						player.vx = 5;
-						if (xShift - level.width > 0) {
-							xShift += player.vx;
-						}
 						break;
 				}
 			});
@@ -91,9 +96,18 @@
 								}
 							}
 						})
+						level.actors.forEach(person => {
+							if (playerNear(player, person)) {
+								if (person instanceof Talker) {
+									ctx.font = "50px Arial";
+									ctx.fillStyle = "White";
+									ctx.fillText(person.speech, 10, 50);
+								}
+							}
+						})
 						break;
 				}
-			})
+			})		
 		}
 	</script>
 	<script type="text/javascript" src="level.js"></script>
