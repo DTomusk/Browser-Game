@@ -4,12 +4,16 @@ function moveStuff(level, xShift, yShift) {
 	level.actors.forEach(actor => {
 		checkCollision(actor, level);
 		// update position
+
+		// need more conditionals for states, need more states
+		// e.g, can't move when talking 
+		// is this the right place for state related behaviour? 
 		if (actor.state == "air") {
 			actor.vy += g;
 		} 
 		actor.x += actor.vx;
 		actor.y += actor.vy;
-		// needs to be changed so relative to midground objects, not canvas boundary
+		console.log(actor.state);
 	})
 }
 

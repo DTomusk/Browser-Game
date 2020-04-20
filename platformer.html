@@ -12,6 +12,7 @@
 		var fps = 24;
 		// when in the air vy of any object increases by 0.5 every frame
 		var g = 1;
+		// camera
 		var xShift = 0;
 		var yShift = 0;
 
@@ -56,13 +57,20 @@
 
 
 			// event listeners, mostly for key presses 
+			// these handle the logic of actor states, if the players is in this state do that etc.
+			// the player state should inform the possible actions at a given moment 
 			window.addEventListener("keydown", function(evt) {
 				switch(evt.keyCode) {
+
 					case 37:
-						player.vx = -5;
+						if (player.state == "ground" || player.state == "air") {
+							player.vx = -5;
+						}
 						break;
 					case 39:
-						player.vx = 5;
+						if (player.state == "ground" || player.state == "air") {
+							player.vx = 5;
+						}
 						break;
 				}
 			});
@@ -86,24 +94,39 @@
 						}
 						break;
 					// e for interaction
+					// if character.state == talking then if there's more speech display that, else clear speech bubble and change state to idle 
 					case 69:
-						level.interactables.forEach(item => {
-							if (playerNear(player, item)) {
-								if (item instanceof Door) {
-									// loadLevel(item.destination)
-									clearScreen();
-									level = item.destination;
-								}
+						if (player.state == "talking") {
+							// when they're talking it should be known who they're talking too 
+							if (player.partner.speech[player.partner.speech.length-1] == level.speech) {
+								level.speech = null;
+								player.state = "ground";
+							} else {
+								player.convIndex += 1;
+								level.speech = player.partner.speech[player.convIndex];
 							}
-						})
-						level.actors.forEach(person => {
-							if (playerNear(player, person)) {
-								if (person instanceof Talker) {
-									// player.state = talking or something like that
-									level.speech = person.speech;
+						} else if (player.state == "ground") {
+							level.interactables.forEach(item => {
+								if (playerNear(player, item)) {
+									if (item instanceof Door) {
+										// loadLevel(item.destination)
+										clearScreen();
+										level = item.destination;
+									}
 								}
-							}
-						})
+							})
+							level.actors.forEach(person => {
+								if (playerNear(player, person)) {
+									if (person instanceof Talker) {
+										// player.state = talking or something like that
+										player.state = "talking";
+										player.partner = person;
+										player.convIndex = 0;
+										level.speech = person.speech[player.convIndex];
+									}
+								}
+							})
+						}
 						break;
 				}
 			})		

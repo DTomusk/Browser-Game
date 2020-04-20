@@ -8,7 +8,7 @@ function drawStuff(level, xShift, yShift) {
 	level.midground.forEach(element => element.draw(xShift, yShift));
 	level.foreground.forEach(element => element.draw(xShift, yShift));
 	if (level.speech != null) {
-		drawSpeech(level, level.speech, xShift, yShift);
+		drawSpeech(level.speech, xShift, yShift);
 	}
 	// if there is text to display display it here in some sort of text box 
 	// we may want to have various texts on screen at once, which complicates matters 
@@ -21,11 +21,11 @@ function drawBG(level) {
 	ctx.fillRect(0,0,level.width,level.height);
 }
 
-function drawSpeech(level, speech, xShift, yShift) {
+function drawSpeech(speech, xShift, yShift) {
 	ctx.fillStyle = "white";
-	ctx.fillRect(5, 5, level.width, 60);
+	ctx.fillRect(5, 5, canvas.width-10, 60);
 	ctx.fillStyle = "black";
-	ctx.fillRect(8, 8, level.width-6, 54);
+	ctx.fillRect(8, 8, canvas.width-13, 54);
 	ctx.font = "50px Arial";
 	ctx.fillStyle = "White";
 	ctx.fillText(speech, 10, 50);

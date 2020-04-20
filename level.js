@@ -11,6 +11,7 @@ class Level {
 		// non collidable objects behind the player
 		this.background = background;
 		this.actors = actors;
+		// speech is an array of strings 
 		this.speech = null;
 	}
 }
@@ -38,6 +39,9 @@ class Object {
 	}
 }
 
+// not all actors need the same capabilities as the player, far from it
+// the player needs to be able to do everything that a given actor can do 
+// but actors each only need to be capable of a small number of things 
 class Actor extends Object {
 	constructor(x, y, width, height, parts) {
 		super(x, y, width, height, parts);
@@ -45,13 +49,16 @@ class Actor extends Object {
 		this.vy = 0;
 		this.walkingOn = null;
 		this.state = "air";
+		this.partner = null;
+		this.convIndex = null;
 	}
 }
 
 class Talker extends Actor {
 	constructor(x, y, width, height, parts) {
 		super(x, y, width, height, parts);
-		this.speech = "Hello stranger, where's the danger?";
+		// script or speech should be a list of strings 
+		this.speech = ["Hello stranger, where's the danger?"];
 	}
 }
 
