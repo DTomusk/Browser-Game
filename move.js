@@ -1,5 +1,5 @@
 // file for working out the logic of the game
-function moveStuff(level, xShift, yShift) {
+function moveStuff(level, xShift, yShift, player) {
 
 	level.actors.forEach(actor => {
 		checkCollision(actor, level);
@@ -11,50 +11,50 @@ function moveStuff(level, xShift, yShift) {
 		if (actor.state == "air") {
 			actor.vy += g;
 		} 
+		if (actor instanceof NPC) {
+			// deal with behaviour stuff, so that is decide what vx and vy are gonna be
+		}
+		// after updating vx and vy do the actual movement
 		actor.x += actor.vx;
 		actor.y += actor.vy;
 		console.log(actor.state);
 	})
+
+	// camera
+	if ((player.x - xShift > 2*canvas.width/3 && player.vx > 0 && xShift < level.width - canvas.width) || (player.x - xShift < canvas.width/3 && player.vx < 0 && xShift > 0)) {
+		xShift += player.vx;
+	};
+	if ((player.y - yShift > 2*canvas.height/3 && player.vy > 0 && yShift < level.height - canvas.height) || (player.y - yShift < canvas.height/3 && player.vy < 0 && yShift > 0)) {
+		yShift += player.yx;
+	};
+	return [xShift, yShift];
 }
 
 function checkCollision(actor, level) {
 	// only works out collision between actors and midground objects
 	level.midground.forEach(object => {
 		// checks collision in all four directions
-		// this can be simplified down to two statements 
-		if (actor.vy > 0 &&
-			actor.y + actor.height + actor.vy > object.y &&
+		// this can be simplified down to two statements (can they?)
+		if (actor.y + actor.height + actor.vy > object.y &&
 			actor.y < object.y + object.height &&
 			actor.x + actor.width > object.x && 
 			actor.x < object.x + object.width) {
-			actor.vy = 0;
-			actor.y = object.y - actor.height;
-			actor.walkingOn = object;
-			actor.state = "ground";
+			if (actor.vy > 0) {
+				actor.vy = 0;
+				actor.y = object.y - actor.height;
+				actor.walkingOn = object;
+				actor.state = "ground";
+			} else if (actor.vy < 0) {
+				actor.vy = 0;
+				actor.y = object.y + actor.height;
+			}
 		}
-		if (actor.vx > 0 &&
-			actor.x + actor.width + actor.vx >= object.x &&
+
+		if (actor.x + actor.width >= object.x &&
 			actor.x <= object.x + object.width &&
 			actor.y + actor.height > object.y && 
 			actor.y < object.y + object.height) {
-			actor.vx = 0;
-			actor.x = object.x - actor.width - 2;
-		}
-		if (actor.vx < 0 &&
-			actor.x + actor.width + actor.vx >= object.x &&
-			actor.x <= object.x + object.width &&
-			actor.y + actor.height > object.y && 
-			actor.y < object.y + object.height) {
-			actor.vx = 0;
-			actor.x = object.x + object.width + 2;
-		}
-		if (actor.vy < 0 &&
-			actor.y + actor.height + actor.vy > object.y &&
-			actor.y < object.y + object.height &&
-			actor.x + actor.width > object.x && 
-			actor.x < object.x + object.width) {
-			actor.vy = 0;
-			actor.y = object.y + actor.height;
+			actor.vx = 0
 		}
 	})
 

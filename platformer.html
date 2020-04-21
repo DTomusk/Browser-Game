@@ -11,7 +11,7 @@
 		var ctx; 
 		var fps = 24;
 		// when in the air vy of any object increases by 0.5 every frame
-		var g = 1;
+		var g = 3;
 		// camera
 		var xShift = 0;
 		var yShift = 0;
@@ -31,27 +31,20 @@
 			var tree = new Oak(70, 130);
 			var player = new Actor(100, 100, 20, 20, [new Component(0,0,20,20,"grey")]);
 
-			var friend = new Talker(150, 100, 20, 20, [new Component(0,0,20,20,"orange")]);
+			var friend = new Talker(150, 100, 20, 20, [new Component(0,0,20,20,"orange")], "idle", ["Hello stranger, what's the danger?"]);
 
 			var enemy = new Actor(400, 100, 20, 30, [new Component(0,0,20,30,"red")]);
 
 			var level2 = new Level(500, 500, [],[],[],[],[]);
 
 			var level = new Level(1200, 600, [], 
-				[new Object(0, 500, 1000, 100, [new Component(0,0,1000,100,"blue")]), new Object(300, 480, 40, 40, [new Component(0,0,40,40,"DarkGoldenRod")])],[tree],[player, enemy, friend],[new Door(200, 400, 100, 100, level2)]);
+				[new Object(0, 500, 1000, 100, [new Component(0,0,1000,100,"blue")]), new Object(300, 480, 40, 40, [new Component(0,0,40,40,"DarkGoldenRod")])],[tree],[player, enemy, friend],[]);
 
 			var levels = [level];
 			
 			// the actual game 
 			setInterval(function() {
-				moveStuff(level, xShift, yShift);
-				// ideally the camera logic would be in a different place but I don't want to deal with refactoring it as of yet 
-				if ((player.x - xShift > 2*canvas.width/3 && player.vx > 0 && xShift < level.width - canvas.width) || (player.x - xShift < canvas.width/3 && player.vx < 0 && xShift > 0)) {
-					xShift += player.vx;
-				};
-				if ((player.y - yShift > 2*canvas.height/3 && player.vy > 0 && yShift < level.height - canvas.height) || (player.y - yShift < canvas.height/3 && player.vy < 0 && yShift > 0)) {
-					yShift += player.yx;
-				};
+				[xShift,yShift]=moveStuff(level, xShift, yShift, player);
 				drawStuff(level, xShift, yShift);
 			}, 1000/fps);
 
@@ -61,7 +54,6 @@
 			// the player state should inform the possible actions at a given moment 
 			window.addEventListener("keydown", function(evt) {
 				switch(evt.keyCode) {
-
 					case 37:
 						if (player.state == "ground" || player.state == "air") {
 							player.vx = -5;
@@ -89,7 +81,7 @@
 						break;
 					case 32: 
 						if (player.state == "ground") {
-							player.vy -= 10;
+							player.vy -= 20;
 							player.state = "air";
 						}
 						break;
@@ -98,14 +90,15 @@
 					case 69:
 						if (player.state == "talking") {
 							// when they're talking it should be known who they're talking too 
-							if (player.partner.speech[player.partner.speech.length-1] == level.speech) {
+							if (level.speaker.speech[level.speaker.speech.length-1] == level.speech) {
 								level.speech = null;
 								player.state = "ground";
 							} else {
-								player.convIndex += 1;
-								level.speech = player.partner.speech[player.convIndex];
+								level.convIndex += 1;
+								level.speech = level.speaker.speech[level.convIndex];
 							}
 						} else if (player.state == "ground") {
+							/*
 							level.interactables.forEach(item => {
 								if (playerNear(player, item)) {
 									if (item instanceof Door) {
@@ -115,14 +108,15 @@
 									}
 								}
 							})
+							*/
 							level.actors.forEach(person => {
 								if (playerNear(player, person)) {
 									if (person instanceof Talker) {
 										// player.state = talking or something like that
 										player.state = "talking";
-										player.partner = person;
-										player.convIndex = 0;
-										level.speech = person.speech[player.convIndex];
+										level.speaker = person;
+										level.convIndex = 0;
+										level.speech = person.speech[level.convIndex];
 									}
 								}
 							})

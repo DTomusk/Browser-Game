@@ -1,18 +1,19 @@
 // a level is just a bunch of objects 
 class Level {
-	constructor(width, height, foreground, midground, background, actors, interactables, spawn) {
+	constructor(width, height, foreground, midground, background, actors) {
 		this.width = width;
 		this.height = height;
 		// non collidable objects in front of the player
 		this.foreground = foreground;
 		// collidable objects
 		this.midground = midground;
-		this.interactables = interactables;
 		// non collidable objects behind the player
 		this.background = background;
 		this.actors = actors;
-		// speech is an array of strings 
+		// the speech here is a string taken from an npc's speech array 
 		this.speech = null;
+		this.speaker = null;
+		this.convIndex = null;
 	}
 }
 
@@ -47,18 +48,24 @@ class Actor extends Object {
 		super(x, y, width, height, parts);
 		this.vx = 0;
 		this.vy = 0;
+		// I still think we need this, I haven't found a solution that doesn't use this yet 
 		this.walkingOn = null;
 		this.state = "air";
-		this.partner = null;
-		this.convIndex = null;
 	}
 }
 
-class Talker extends Actor {
-	constructor(x, y, width, height, parts) {
+class NPC extends Actor {
+	constructor(x, y, width, height, parts, behaviour) {
 		super(x, y, width, height, parts);
+		this.behaviour = behaviour
+	}
+}
+
+class Talker extends NPC {
+	constructor(x, y, width, height, parts, behaviour, speech) {
+		super(x, y, width, height, parts, behaviour);
 		// script or speech should be a list of strings 
-		this.speech = ["Hello stranger, where's the danger?"];
+		this.speech = speech;
 	}
 }
 
