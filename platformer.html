@@ -31,18 +31,16 @@
 			var tree = new Oak(70, 130);
 			var player = new Actor(100, 100, 20, 20, [new Component(0,0,20,20,"grey")]);
 
-			var friend = new Talker(150, 100, 20, 20, [new Component(0,0,20,20,"orange")], "idle", ["Hello stranger, what's the danger?"]);
+			var friend = new Talker(150, 100, 20, 20, [new Component(0,0,20,20,"orange")], "walk left", ["Hello stranger, what's the danger?"]);
 
-			var enemy = new Actor(400, 100, 20, 30, [new Component(0,0,20,30,"red")]);
-
-			var level2 = new Level(500, 500, [],[],[],[],[]);
+			var enemy = new NPC(400, 100, 20, 30, [new Component(0,0,20,30,"red")], "pursue");
 
 			var level = new Level(1200, 600, [], 
 				[new Object(0, 500, 1000, 100, [new Component(0,0,1000,100,"blue")]), new Object(300, 480, 40, 40, [new Component(0,0,40,40,"DarkGoldenRod")])],[tree],[player, enemy, friend],[]);
 
-			var levels = [level];
-			
-			// the actual game 
+			// does nothing for now, will do something maybe
+			// var levels = [level];
+		
 			setInterval(function() {
 				[xShift,yShift]=moveStuff(level, xShift, yShift, player);
 				drawStuff(level, xShift, yShift);

@@ -2,22 +2,15 @@
 function moveStuff(level, xShift, yShift, player) {
 
 	level.actors.forEach(actor => {
-		checkCollision(actor, level);
-		// update position
-
-		// need more conditionals for states, need more states
-		// e.g, can't move when talking 
-		// is this the right place for state related behaviour? 
 		if (actor.state == "air") {
 			actor.vy += g;
 		} 
 		if (actor instanceof NPC) {
-			// deal with behaviour stuff, so that is decide what vx and vy are gonna be
+			handleBehaviour(actor, player);
 		}
-		// after updating vx and vy do the actual movement
+		checkCollision(actor, level);
 		actor.x += actor.vx;
 		actor.y += actor.vy;
-		console.log(actor.state);
 	})
 
 	// camera
@@ -50,11 +43,15 @@ function checkCollision(actor, level) {
 			}
 		}
 
-		if (actor.x + actor.width >= object.x &&
-			actor.x <= object.x + object.width &&
+		if (actor.x + actor.width + actor.vx >= object.x &&
+			actor.x +actor.vx <= object.x + object.width &&
 			actor.y + actor.height > object.y && 
 			actor.y < object.y + object.height) {
-			actor.vx = 0
+			if (actor.vx > 0) {
+				actor.x = object.x - actor.width - actor.vx;
+			} else if (actor.vx < 0) {
+				actor.x = object.x + object.width - actor.vx;
+			}
 		}
 	})
 
@@ -85,6 +82,33 @@ function checkCollision(actor, level) {
 			actor.state = "air";
 		}
 	}
+}
+
+function handleBehaviour(actor, player) {
+	switch (actor.behaviour) {
+		case "walk left":
+			actor.vx = -3;
+			break;
+		case "pursue":
+			d=distanceBetween(actor, player);
+			if (d <= 300 && d >= 20){
+				if (actor.x-player.x < 0){
+					actor.vx = 2;
+				} else {
+					actor.vx = -2
+				}
+			} else {
+				actor.vx = 0;
+			}
+	}
+}
+
+function distanceBetween(object1, object2) {
+	dy = (object1.y+object1.height/2)-(object2.y+object2.height/2)
+	dx = (object1.x+object1.width/2)-(object2.x+object2.width/2)
+	dy2 = dy*dy;
+	dx2 = dx*dx;
+	return Math.sqrt(dy2+dx2);
 }
 
 function playerNear(player, item) {
