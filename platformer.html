@@ -4,14 +4,14 @@
 	<title></title>
 </head>
 <body>
-	<canvas id="canvas" width="800" height="600"></canvas>
+	<canvas id="canvas" width="1200" height="800"></canvas>
 
 	<script type="text/javascript">
 		var canvas;
 		var ctx; 
 		var fps = 24;
 		// when in the air vy of any object increases by 0.5 every frame
-		var g = 3;
+		var g = 4;
 		// camera
 		var xShift = 0;
 		var yShift = 0;
@@ -28,15 +28,24 @@
 
 
 			// initial objects, should be in its own place
-			var tree = new Oak(70, 130);
-			var player = new Actor(100, 100, 20, 20, [new Component(0,0,20,20,"grey")]);
 
-			var friend = new Talker(150, 100, 20, 20, [new Component(0,0,20,20,"orange")], "walk left", ["Hello stranger, what's the danger?"]);
+			/*
+			var tree = new Oak(70, 130);
+			
+
+			var friend = new Talker(150, 100, 20, 20, [new Component(0,0,20,20,"orange")], "idle", ["Hello stranger, what's the danger?", "My mom can't control her toes", "The village is a burning prism"]);
+
+			var dumbo = new Talker(500, 100, 20, 20, [new Component(0,0,20,20,"olive")], "idle", ["The city's an empty glass", "People squirm in the streets"]);
 
 			var enemy = new NPC(400, 100, 20, 30, [new Component(0,0,20,30,"red")], "pursue");
 
 			var level = new Level(1200, 600, [], 
-				[new Object(0, 500, 1000, 100, [new Component(0,0,1000,100,"blue")]), new Object(300, 480, 40, 40, [new Component(0,0,40,40,"DarkGoldenRod")])],[tree],[player, enemy, friend],[]);
+				[new Thing(0, 500, 1000, 100, [new Component(0,0,1000,100,"blue")]), new Thing(300, 480, 40, 40, [new Component(0,0,40,40,"DarkGoldenRod")])],[tree],[player, enemy, friend, dumbo],[]);
+			*/
+
+			var player = new Player(100, 100, 50, 70, [new Component(0,0,50,70,"grey")]);
+			level = loadLevels();
+			level.actors = [player];
 
 			// does nothing for now, will do something maybe
 			// var levels = [level];
@@ -53,15 +62,22 @@
 			window.addEventListener("keydown", function(evt) {
 				switch(evt.keyCode) {
 					case 37:
-						if (player.state == "ground" || player.state == "air") {
-							player.vx = -5;
+						if (player.movement == true) {
+							if (player.state == "ground" || player.state == "air") {
+								player.vx = -10;
+							}
 						}
 						break;
 					case 39:
-						if (player.state == "ground" || player.state == "air") {
-							player.vx = 5;
+						if (player.movement == true) {
+							if (player.state == "ground" || player.state == "air") {
+								player.vx = 10;
+							}
 						}
 						break;
+					case 70:
+						player.focus += 1;
+						break; 
 				}
 			});
 
@@ -79,7 +95,7 @@
 						break;
 					case 32: 
 						if (player.state == "ground") {
-							player.vy -= 20;
+							player.vy -= 25;
 							player.state = "air";
 						}
 						break;
@@ -120,13 +136,20 @@
 							})
 						}
 						break;
+					case 70:
+						if (player.focus > 100) {
+							player.gravity = true;
+							// do stuff to learn a new ability 
+						}
+						player.focus = 0;
 				}
 			})		
 		}
 	</script>
-	<script type="text/javascript" src="level.js"></script>
+	<script type="text/javascript" src="objects.js"></script>
 	<script type="text/javascript" src="move.js"></script>
 	<script type="text/javascript" src="draw.js"></script>
+	<script type="text/javascript" src="levels.js"></script>
 
 </body>
 </html>

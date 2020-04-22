@@ -1,7 +1,13 @@
 // file for drawing the game 
 function drawStuff(level, xShift, yShift) {
 	drawBG(level);
-	// this should all be relative to the camera
+	// keep things centered if the level is smaller than the canvas 
+	if (level.width < canvas.width) {
+		xShift -= (canvas.width-level.width)/2;
+	}
+	if (level.height < canvas.height) {
+		yShift -= (canvas.height-level.height)/2;
+	}
 	level.background.forEach(element => element.draw(xShift, yShift));
 	level.actors.forEach(actor => actor.draw(xShift, yShift));
 	level.midground.forEach(element => element.draw(xShift, yShift));
@@ -17,7 +23,7 @@ function drawStuff(level, xShift, yShift) {
 
 function drawBG(level) {
 	ctx.fillStyle = "black";
-	ctx.fillRect(0,0,level.width,level.height);
+	ctx.fillRect(0,0,canvas.width,canvas.height);
 }
 
 function drawSpeech(speech, xShift, yShift) {

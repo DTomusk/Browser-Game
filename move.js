@@ -3,7 +3,10 @@ function moveStuff(level, xShift, yShift, player) {
 
 	level.actors.forEach(actor => {
 		if (actor.state == "air") {
-			actor.vy += g;
+			if (actor instanceof Player && actor.gravity == false) {
+			} else {
+				actor.vy += g;
+			}
 		} 
 		if (actor instanceof NPC) {
 			handleBehaviour(actor, player);
@@ -27,7 +30,6 @@ function checkCollision(actor, level) {
 	// only works out collision between actors and midground objects
 	level.midground.forEach(object => {
 		// checks collision in all four directions
-		// this can be simplified down to two statements (can they?)
 		if (actor.y + actor.height + actor.vy > object.y &&
 			actor.y < object.y + object.height &&
 			actor.x + actor.width > object.x && 
