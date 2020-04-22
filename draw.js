@@ -9,7 +9,10 @@ function drawStuff(level, xShift, yShift) {
 		yShift -= (canvas.height-level.height)/2;
 	}
 	level.background.forEach(element => element.draw(xShift, yShift));
-	level.actors.forEach(actor => actor.draw(xShift, yShift));
+	level.actors.forEach(actor => {
+		console.log(actor);
+		actor.draw(xShift, yShift);
+	});
 	level.midground.forEach(element => element.draw(xShift, yShift));
 	level.foreground.forEach(element => element.draw(xShift, yShift));
 	if (level.speech != null) {

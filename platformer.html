@@ -47,12 +47,20 @@
 			level = loadLevels();
 			level.actors = [player];
 
+			scene1 = new Scene([new Pause(2000), new Spawn(new NPC(400, 100, 20, 30, [new Component(0,0,20,30,"red")], "idle"), new Pause(5000))]);
+
 			// does nothing for now, will do something maybe
-			// var levels = [level];
-		
+			// var levels = [level]
+
+			script = new Script([scene1]);
+
 			setInterval(function() {
 				[xShift,yShift]=moveStuff(level, xShift, yShift, player);
 				drawStuff(level, xShift, yShift);
+				if (script.scenes.length != 0) {
+					script.scenes[0].playScene(level);
+					script.scenes.shift();
+				}
 			}, 1000/fps);
 
 
@@ -150,6 +158,9 @@
 	<script type="text/javascript" src="move.js"></script>
 	<script type="text/javascript" src="draw.js"></script>
 	<script type="text/javascript" src="levels.js"></script>
+	<script type="text/javascript" src="scenes.js"></script>
+	<script type="text/javascript" src="script.js"></script>
+
 
 </body>
 </html>
