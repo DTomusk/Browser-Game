@@ -1,3 +1,4 @@
 # Browser-Game
 Prototyping a 2d platformer game concept. I had intended to make a game in JavaScript just using the html canvas because of its ease of use and the ability to set things up quickly, but the deeper I got into it the more I realised I was trying to do class based object oriented things which is not JS's strong point. I'm planning on redoing this thing in another, more fitting language (like Python or Java), but that shouldn't be hard to get up to speed because I've already done most of the brain work here. 
+
 The organisation of this repo is fairly atrocious. The main file for the game is platformer.js which brings in a number of scripts that are also included (but there are also a couple of files that aren't used at all by platformer from earlier development). Now that I have a fairly strong idea of how I want to organise the logic of my code, the next iteration should be a lot more intuitive. 
